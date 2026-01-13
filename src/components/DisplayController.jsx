@@ -1,7 +1,8 @@
 import { MetricDisplay, ChartDisplay, ListDisplay, ProgressDisplay } from './displayTypes'
 
-const DisplayController = ({ currentData = null }) => {
+const DisplayController = ({ currentData = null, loading = false }) => {
 
+    if (loading) return <></>
     switch (currentData?.type) {
         case 'metric':
             return <MetricDisplay data={currentData.data} />

@@ -1,4 +1,16 @@
-export const sampleData = [
+import express from 'express'
+import cors from 'cors'
+import dotenv from "dotenv"
+
+dotenv.config()
+
+const app = express()
+const PORT = process.env.SERVER_PORT
+
+app.use(cors())
+app.use(express.json())
+
+const sampleData = [
     {
         "type": "metric",
         "data": {
@@ -41,4 +53,14 @@ export const sampleData = [
             "unit": "sales"
         }
     }
-];
+]
+
+app.get('/api/random-data', (req, res) => {
+    const randomIndex = Math.floor(Math.random() * sampleData.length)
+    const randomData = sampleData[randomIndex]
+    res.status(200).json({ success: true, data: randomData })
+})
+
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`)
+})

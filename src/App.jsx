@@ -1,13 +1,21 @@
 import { useState } from 'react'
-import { sampleData } from './constants'
 import DisplayController from './components/DisplayController'
+import { randomDataApi } from './services/randomData'
 
 function App() {
   const [currentData, setCurrentData] = useState(null)
+  const [loading, setLoading] = useState(false)
 
-  const fetchRandomData = () => {
-    const randomIndex = Math.floor(Math.random() * sampleData.length)
-    setCurrentData(sampleData[randomIndex])
+  const fetchRandomData = async () => {
+    setLoading(true)
+    try {
+      const response = await randomDataApi.getRandomData()
+      setCurrentData(response.data)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -15,13 +23,18 @@ function App() {
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Data Display Panel</h1>
       <button
         onClick={fetchRandomData}
-        className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-8"
+        disabled={loading}
+        className={`cursor-pointer font-bold py-2 px-4 rounded mb-8 ${loading
+          ? 'bg-gray-400 cursor-not-allowed'
+          : 'bg-blue-500 hover:bg-blue-700'
+          } text-white`}
       >
-        Fetch Random Data
+        {loading ? 'Loading...' : 'Fetch Random Data'}
       </button>
       <div className="w-full max-w-2xl">
         <DisplayController
           currentData={currentData}
+          loading={loading}
         />
       </div>
     </div>
